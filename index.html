@@ -67,13 +67,13 @@
           </div>
 
           <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-            <p class="text-xs text-slate-400 uppercase font-semibold">Lesen Tamat Tempoh</p>
-            <p id="statLesenLuput" class="text-2xl font-bold text-rose-400">0</p>
+            <p class="text-xs text-slate-400 uppercase font-semibold">Belum Ada Lesen Vokasional</p>
+            <p id="statTiadaLesen" class="text-2xl font-bold text-amber-400">0</p>
           </div>
 
           <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-            <p class="text-xs text-slate-400 uppercase font-semibold">Jumlah Tuntutan (RM)</p>
-            <p id="statJumlahTuntutan" class="text-2xl font-bold text-amber-400">RM 0.00</p>
+            <p class="text-xs text-slate-400 uppercase font-semibold">Lesen Tamat Tempoh</p>
+            <p id="statLesenLuput" class="text-2xl font-bold text-rose-400">0</p>
           </div>
         </div>
       </div>
@@ -88,7 +88,7 @@
       </div>
     </aside>
 
-    <!-- KANDUNGAN UTAMA / BORANG PEMANDU -->
+    <!-- BORANG PEMANDU -->
     <main class="flex-1 p-6 print-area">
       <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-md">
         
@@ -144,17 +144,18 @@
           <!-- PENGELASAN LESEN -->
           <div>
             <label class="block text-sm font-semibold mb-1">Jenis Utama Lesen Vokasional (Pekeliling)</label>
-            <select id="jenisLesen" class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 mb-3">
+            <select id="jenisLesen" onchange="kemaskiniMedanLesen()" class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 mb-3">
+              <option value="Tiada">Tiada (Belum Memiliki Lesen Vokasional)</option>
               <option value="GDL">GDL (Goods Driving Licence)</option>
               <option value="PSV">PSV (Public Service Vehicle)</option>
               <option value="GDL & PSV">GDL & PSV (Kedua-dua)</option>
             </select>
 
-            <label class="block text-xs font-semibold text-slate-600 mb-2">Kelas Lesen Lain Dimiliki (Tanda jika ada):</label>
+            <label class="block text-xs font-semibold text-slate-600 mb-2">Kelas Lesen CDL / Biasa Dimiliki (Tanda jika ada):</label>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-2 border p-3 rounded bg-slate-50">
               <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="lesenOpt" value="B2" class="rounded"> B2 (Motosikal)</label>
               <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="lesenOpt" value="B Full" class="rounded"> B Full</label>
-              <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="lesenOpt" value="D" class="rounded"> D (Motokar)</label>
+              <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="lesenOpt" value="D" class="rounded"> D (Motokar/Kereta)</label>
               <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="lesenOpt" value="DA" class="rounded"> DA (Auto)</label>
               <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="lesenOpt" value="E" class="rounded"> E (Lori/Bas)</label>
               <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="lesenOpt" value="Lain-lain" class="rounded"> Lain-lain</label>
@@ -169,15 +170,15 @@
                 <option value="Tidak">Tidak</option>
               </select>
             </div>
-            <div>
+            <div id="boxNoLesen">
               <label class="block text-sm font-semibold mb-1">No. Lesen Vokasional</label>
-              <input type="text" id="noLesen" required class="w-full border p-2 rounded">
+              <input type="text" id="noLesen" class="w-full border p-2 rounded">
             </div>
           </div>
 
-          <div>
-            <label class="block text-sm font-semibold mb-1">Tarikh Luput Lesen</label>
-            <input type="date" id="tarikhLuput" required class="w-full border p-2 rounded">
+          <div id="boxTarikhLuput">
+            <label class="block text-sm font-semibold mb-1">Tarikh Luput Lesen Vokasional</label>
+            <input type="date" id="tarikhLuput" class="w-full border p-2 rounded">
           </div>
 
           <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 rounded hover:bg-blue-700 transition no-print">
@@ -191,18 +192,35 @@
 
   <script>
     // GANTIKAN DENGAN WEB APP URL GOOGLE APPS SCRIPT ANDA
-    const SCRIPT_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbzMlLW_025R0pr2qqCHtGsqXKEYwPbwihSTBfSMH8o4o9LJ0es9MWO3UFXOiFUhzHnt/exec";
+    const SCRIPT_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbyuHX3Z8rdpbBccBYQ-1znKWG472VZJ8lDSqmYn0LS7YJdwAN8h7SIKauTpbrgRc84j/exec";
     let currentUser = null;
 
-    // 1. LOG MASUK
+    function kemaskiniMedanLesen() {
+      const v = document.getElementById('jenisLesen').value;
+      const noLesenInput = document.getElementById('noLesen');
+      const tarikhLuputInput = document.getElementById('tarikhLuput');
+
+      if (v === "Tiada") {
+        noLesenInput.value = "Tiada";
+        noLesenInput.disabled = true;
+        tarikhLuputInput.value = "";
+        tarikhLuputInput.disabled = true;
+      } else {
+        if (noLesenInput.value === "Tiada") noLesenInput.value = "";
+        noLesenInput.disabled = false;
+        tarikhLuputInput.disabled = false;
+      }
+    }
+
+    // LOG MASUK (NEUTRAL CASE)
     document.getElementById('loginForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const btn = document.getElementById('btnLogin');
       btn.innerText = "Memproses...";
       btn.disabled = true;
 
-      const usernameVal = document.getElementById('loginUsername').value;
-      const passwordVal = document.getElementById('loginPassword').value;
+      const usernameVal = document.getElementById('loginUsername').value.trim();
+      const passwordVal = document.getElementById('loginPassword').value.trim();
 
       fetch(SCRIPT_URL, {
         method: 'POST',
@@ -227,6 +245,7 @@
             document.getElementById('sidebarAnalitik').classList.add('hidden');
             document.getElementById('idPemandu').value = data.username;
           }
+          kemaskiniMedanLesen();
         } else {
           document.getElementById('loginError').classList.remove('hidden');
         }
@@ -242,25 +261,23 @@
       location.reload();
     }
 
-    // 2. KEMASKINI ANALITIK SIDEBAR
     function kemaskiniDashboard() {
       fetch(`${SCRIPT_URL}?action=getAnalitik`)
         .then(res => res.json())
         .then(data => {
           document.getElementById('statJumlahPemandu').innerText = data.jumlahPemandu;
           document.getElementById('statAmbulansGantian').innerText = data.pemanduAmbulansGantian;
+          document.getElementById('statTiadaLesen').innerText = data.tiadaLesenVokasional;
           document.getElementById('statLesenLuput').innerText = data.lesenLuput;
-          document.getElementById('statJumlahTuntutan').innerText = `RM ${data.jumlahTuntutanRM}`;
         })
         .catch(err => console.log("Gagal muat analitik:", err));
     }
 
-    // 3. MUAT TURUN LAPORAN CSV
     function muatTurunAnalitik() {
       const jPemandu = document.getElementById('statJumlahPemandu').innerText;
       const jAmbulans = document.getElementById('statAmbulansGantian').innerText;
+      const jTiada = document.getElementById('statTiadaLesen').innerText;
       const jLuput = document.getElementById('statLesenLuput').innerText;
-      const jTuntutan = document.getElementById('statJumlahTuntutan').innerText;
 
       let csvContent = "data:text/csv;charset=utf-8,";
       csvContent += "RINGKASAN ANALISIS PEMANDU & LESEN VOKASIONAL KKM\n";
@@ -268,8 +285,8 @@
       csvContent += "Metrik,Nilai\n";
       csvContent += `Jumlah Pemandu Berdaftar,${jPemandu}\n`;
       csvContent += `Pemandu Terlibat Ambulans Gantian,${jAmbulans}\n`;
+      csvContent += `Belum Memiliki Lesen Vokasional,${jTiada}\n`;
       csvContent += `Lesen Tamat Tempoh,${jLuput}\n`;
-      csvContent += `Jumlah Tuntutan Terkumpul,${jTuntutan}\n`;
 
       const encodedUri = encodeURI(csvContent);
       const link = document.createElement("a");
@@ -280,7 +297,7 @@
       document.body.removeChild(link);
     }
 
-    // 4. SIMPAN DATA PEMANDU
+    // SIMPAN DATA PEMANDU
     document.getElementById('pemanduForm').addEventListener('submit', function(e) {
       e.preventDefault();
       
@@ -293,6 +310,9 @@
         gabungLesen += ` (${lesenTambahan.join(', ')})`;
       }
 
+      const noLesenVal = document.getElementById('noLesen').value || "Tiada";
+      const tarikhLuputVal = document.getElementById('tarikhLuput').value || "Tiada";
+
       const payload = {
         action: "simpanPemandu",
         idPemandu: document.getElementById('idPemandu').value,
@@ -304,9 +324,9 @@
         ptj: document.getElementById('ptj').value,
         ambulansGantian: document.getElementById('ambulansGantian').value,
         jenisLesen: gabungLesen,
-        noLesen: document.getElementById('noLesen').value,
-        tarikhLuput: document.getElementById('tarikhLuput').value,
-        statusLesen: "Aktif"
+        noLesen: noLesenVal,
+        tarikhLuput: tarikhLuputVal,
+        statusLesen: utamaLesen === "Tiada" ? "Belum Memiliki" : "Aktif"
       };
 
       fetch(SCRIPT_URL, {
@@ -318,6 +338,7 @@
       .then(data => {
         alert('Data pemandu berjaya dihantar!');
         document.getElementById('pemanduForm').reset();
+        kemaskiniMedanLesen();
         if (currentUser && currentUser.role === "Penyelia") {
           setTimeout(kemaskiniDashboard, 2000);
         }
