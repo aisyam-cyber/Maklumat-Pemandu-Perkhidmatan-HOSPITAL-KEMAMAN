@@ -6,8 +6,13 @@
   <title>Sistem Pengurusan Lesen Vokasional KKM</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* FORMAT KAWALAN CETAKAN RASMI STRICT (BEBAS HALAMAN KOSONG) */
+    /* FORMAT KAWALAN CETAKAN LANDSCAPE RASMI (PENGAMBILAN A4 LANDSCAPE DENGAN LAJUR STATUS KEMAS) */
     @media print {
+      @page {
+        size: A4 landscape;
+        margin: 10mm;
+      }
+
       body * {
         visibility: hidden !important;
       }
@@ -31,7 +36,6 @@
         display: none !important; 
       }
 
-      /* Kawalan Pemisahan Halaman Kemas & Ketat */
       .page-break { 
         page-break-after: always !important; 
         break-after: page !important; 
@@ -50,14 +54,16 @@
       table { 
         width: 100%; 
         border-collapse: collapse !important; 
-        margin-top: 5px;
+        margin-top: 10px;
+        table-layout: fixed;
       }
       th, td { 
         border: 1px solid #000 !important; 
-        padding: 4px 6px !important; 
+        padding: 6px 8px !important; 
         text-align: left; 
         font-size: 9pt !important;
-        word-break: break-word;
+        word-wrap: break-word;
+        white-space: normal;
       }
       th { 
         background-color: #f2f2f2 !important; 
@@ -475,12 +481,13 @@
       paparkanJadualPaging();
     }
 
-    // FUNGSI JANA LAPORAN RASMI CETAKAN DIBETULKAN (8 ITEM PERPAGE SUAT A4)
+    // FUNGSI JANA LAPORAN RASMI CETAKAN LANDSCAPE DENGAN LEBAR LAJUR DIBETULKAN
     function janaLaporanDanCetak() {
       const reportBox = document.getElementById('printReportContainer');
       reportBox.innerHTML = "";
 
-      const itemsPerPage = 8; // 8 PEMANDU SEHALAMAN A4
+      // UNTUK LANDSCAPE: 8 ITEM SEHALAMAN SUPAYA CUKUP RUANG TANPA TERPOTONG
+      const itemsPerPage = 8; 
       const dataToPrint = masterDataPemandu;
       const totalPages = Math.ceil(dataToPrint.length / itemsPerPage) || 1;
 
@@ -508,24 +515,24 @@
         const pageClass = isLastPage ? '' : 'page-break';
 
         const pageHtml = `
-          <div class="${pageClass}" style="padding:10px 0;">
-            <div style="text-align:center; margin-bottom:10px; border-bottom:2px solid #000; padding-bottom:8px;">
-              <h2 style="font-size:14pt; font-weight:bold; margin:0;">KEMENTERIAN KESIHATAN MALAYSIA</h2>
-              <h3 style="font-size:10pt; font-weight:bold; margin:2px 0 0 0;">LAPORAN INVENTORI PEMANDU & LESEN VOKASIONAL (GDL/PSV)</h3>
+          <div class="${pageClass}" style="padding:5px 0;">
+            <div style="text-align:center; margin-bottom:10px; border-bottom:2px solid #000; padding-bottom:6px;">
+              <h2 style="font-size:15pt; font-weight:bold; margin:0;">KEMENTERIAN KESIHATAN MALAYSIA</h2>
+              <h3 style="font-size:11pt; font-weight:bold; margin:2px 0 0 0;">LAPORAN INVENTORI PEMANDU & LESEN VOKASIONAL (GDL/PSV)</h3>
               <p style="font-size:8pt; margin:2px 0 0 0;">Rujukan Pekeliling: KKM.600-27/12/2 JLD. 19 (15) | Tarikh Cetakan: ${new Date().toLocaleDateString('ms-MY')}</p>
             </div>
 
             <table>
               <thead>
                 <tr>
-                  <th style="width:5%;">Bil</th>
-                  <th style="width:25%;">Nama Pemandu & No. KP</th>
-                  <th style="width:20%;">PTJ & Gred</th>
-                  <th style="width:10%;">Ambulans Gantian</th>
-                  <th style="width:15%;">Lesen Vokasional</th>
+                  <th style="width:4%;">Bil</th>
+                  <th style="width:28%;">Nama Pemandu & No. KP</th>
+                  <th style="width:18%;">PTJ & Gred</th>
+                  <th style="width:8%;">Ambulans Gantian</th>
+                  <th style="width:18%;">Lesen Vokasional</th>
                   <th style="width:10%;">No. Lesen</th>
-                  <th style="width:10%;">Tarikh Luput</th>
-                  <th style="width:5%;">Status</th>
+                  <th style="width:12%;">Tarikh Luput</th>
+                  <th style="width:12%;">Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -533,13 +540,13 @@
               </tbody>
             </table>
 
-            <div style="margin-top:10px; display:flex; justify-content:space-between; font-size:8pt;">
+            <div style="margin-top:8px; display:flex; justify-content:space-between; font-size:8pt;">
               <div>Halaman ${p + 1} daripada ${totalPages}</div>
               <div>Dicetak secara automatik dari Sistem Pengurusan Lesen KKM</div>
             </div>
 
             ${isLastPage ? `
-              <div style="margin-top:25px; display:flex; justify-content:space-between; font-size:9pt;" class="page-break-inside-avoid">
+              <div style="margin-top:20px; display:flex; justify-content:space-between; font-size:9pt;" class="page-break-inside-avoid">
                 <div style="width:40%; text-align:center;">
                   <p>Disediakan Oleh:</p>
                   <br><br>
