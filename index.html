@@ -6,17 +6,27 @@
   <title>Sistem Pengurusan Lesen Vokasional KKM</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    /* FORMAT FORMAT CETAKAN RASMI (PRINT LAYOUT) */
     @media print {
+      body { background-color: white !important; font-size: 11pt; color: black; }
       .no-print { display: none !important; }
-      body { background-color: white; padding: 0; }
-      .print-area { width: 100% !important; margin: 0 !important; box-shadow: none !important; }
+      .print-only { display: block !important; }
+      
+      /* Kawalan Halaman Cetakan */
+      .page-break { page-break-after: always; break-after: page; }
+      .page-break-inside-avoid { page-break-inside: avoid; }
+      
+      table { width: 100%; border-collapse: collapse; }
+      th, td { border: 1px solid #000 !important; padding: 6px !important; text-align: left; }
+      th { background-color: #f2f2f2 !important; }
     }
+    .print-only { display: none; }
   </style>
 </head>
 <body class="bg-slate-100 min-h-screen">
 
   <!-- MODAL LOG MASUK -->
-  <div id="loginModal" class="fixed inset-0 bg-slate-900 bg-opacity-80 flex items-center justify-center z-50">
+  <div id="loginModal" class="fixed inset-0 bg-slate-900 bg-opacity-80 flex items-center justify-center z-50 no-print">
     <div class="bg-white p-8 rounded-xl shadow-2xl max-w-md w-full border border-slate-200">
       <div class="text-center mb-6">
         <h2 class="text-2xl font-bold text-slate-800">Log Masuk Sistem</h2>
@@ -44,7 +54,7 @@
     </div>
   </div>
 
-  <!-- APLIKASI UTAMA -->
+  <!-- APLIKASI UTAMA (PAPARAN SKRIN WEB) -->
   <div id="appContainer" class="hidden flex flex-col md:flex-row min-h-screen">
     
     <!-- SIDEBAR ANALITIK (PENYELIA SAHAJA) -->
@@ -55,7 +65,7 @@
           <button onclick="kemaskiniDashboard()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded border border-slate-600">🔄 Muat Semula</button>
         </div>
 
-        <!-- PECAHAN ANALITIK KATEGORI LESEN -->
+        <!-- PECAHAN ANALITIK -->
         <div class="space-y-3">
           <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 flex justify-between items-center">
             <span class="text-xs text-slate-300 font-medium">Jumlah Pemandu</span>
@@ -96,27 +106,28 @@
         </div>
       </div>
 
+      <!-- BUTANG CETAK & DOWNLOAD -->
       <div class="mt-6 space-y-2 pt-3 border-t border-slate-700">
         <button onclick="muatTurunAnalitik()" class="w-full bg-slate-700 hover:bg-slate-600 text-xs text-white font-medium py-2 px-3 rounded flex items-center justify-center gap-2 transition">
           📥 Muat Turun Ringkasan (CSV)
         </button>
-        <button onclick="window.print()" class="w-full bg-blue-600 hover:bg-blue-700 text-xs text-white font-medium py-2 px-3 rounded flex items-center justify-center gap-2 transition">
-          🖨️ Cetak Laporan Analisis
+        <button onclick="janaLaporanDanCetak()" class="w-full bg-blue-600 hover:bg-blue-700 text-xs text-white font-bold py-2 px-3 rounded flex items-center justify-center gap-2 transition">
+          🖨️ Cetak Laporan Rasmi Senarai Pemandu
         </button>
       </div>
     </aside>
 
-    <!-- KANDUNGAN UTAMA / BORANG & JADUAL PAGING -->
-    <main class="flex-1 p-6 print-area space-y-6">
+    <!-- KANDUNGAN UTAMA / BORANG & JADUAL SKRIN -->
+    <main class="flex-1 p-6 space-y-6">
       
       <!-- BORANG PEMANDU -->
-      <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-md">
+      <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-md no-print">
         <div class="flex justify-between items-center mb-6 border-b pb-4">
           <div>
             <h2 class="text-2xl font-bold text-slate-800">Pendaftaran Pemandu & Lesen Vokasional</h2>
             <p class="text-xs text-slate-500 mt-1">Rujukan: KKM.600-27/12/2 JLD. 19 (15)</p>
           </div>
-          <div class="text-right no-print">
+          <div class="text-right">
             <p id="userNamaDisplay" class="text-sm font-bold text-slate-700"></p>
             <button onclick="logKeluar()" class="text-xs text-rose-600 hover:underline">Log Keluar</button>
           </div>
@@ -160,7 +171,6 @@
             </div>
           </div>
 
-          <!-- PENGELASAN LESEN -->
           <div>
             <label class="block text-sm font-semibold mb-1">Jenis Utama Lesen Vokasional (Pekeliling)</label>
             <select id="jenisLesen" onchange="kemaskiniMedanLesen()" class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 mb-3">
@@ -200,18 +210,17 @@
             <input type="date" id="tarikhLuput" class="w-full border p-2 rounded">
           </div>
 
-          <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 rounded hover:bg-blue-700 transition no-print">
+          <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 rounded hover:bg-blue-700 transition">
             Hantar Data Pemandu
           </button>
         </form>
       </div>
 
-      <!-- JADUAL SENARAI PEMANDU DENGAN PAGING (PENYELIA SAHAJA) -->
+      <!-- JADUAL INTERAKTIF WEB (PAGING 5 PERPAGE) -->
       <div id="sectionJadualPemandu" class="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-md hidden no-print">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4 border-b pb-3">
           <h3 class="text-lg font-bold text-slate-800">📋 Senarai Rekod Pemandu</h3>
           
-          <!-- TAPISAN / FILTER -->
           <div class="flex items-center gap-2">
             <label class="text-xs font-semibold text-slate-600">Tapis Lesen:</label>
             <select id="filterLesen" onchange="tukarFilterJadual()" class="border text-xs p-1.5 rounded bg-slate-50">
@@ -224,7 +233,6 @@
           </div>
         </div>
 
-        <!-- JADUAL DATA -->
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs border-collapse">
             <thead>
@@ -242,7 +250,6 @@
           </table>
         </div>
 
-        <!-- KAWALAN PAGING (5 REKOD PERPAGE) -->
         <div class="flex justify-between items-center mt-4 border-t pt-3 text-xs">
           <span id="infoPaging" class="text-slate-500">Menunjukkan 0-0 dari 0 rekod</span>
           <div class="flex gap-2">
@@ -256,13 +263,16 @@
 
   </div>
 
+  <!-- BEKAS KHAS CETAKAN LAPORAN RASMI (PRINT CONTAINER PAGE-BY-PAGE) -->
+  <div id="printReportContainer" class="print-only p-4"></div>
+
   <script>
-    const SCRIPT_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbzott_62zL01u449jjR-X8KmB03Pjxzh6GqOwDrygGKq2ES4I-MYyq9kYofDASJDn8/exec";
+    const SCRIPT_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbyIDz7dV-oYTu4qBld5_s2bQ40AUhrlv_70ldx2mHW_mPvbeLxSwlpbjQXhQfg_ka3J/exec";
     let currentUser = null;
     let masterDataPemandu = [];
     let filteredDataPemandu = [];
     let currentPage = 1;
-    const pageSize = 5; // 5 REKOD PER HALAMAN
+    const pageSize = 5;
 
     function kemaskiniMedanLesen() {
       const v = document.getElementById('jenisLesen').value;
@@ -332,7 +342,6 @@
       location.reload();
     }
 
-    // KEMASKINI DASHBOARD ANALITIK & JADUAL
     function kemaskiniDashboard() {
       fetch(`${SCRIPT_URL}?action=getAnalitik`)
         .then(res => res.json())
@@ -351,7 +360,6 @@
         .catch(err => console.log("Gagal muat analitik:", err));
     }
 
-    // FUNGSI TAPISAN JADUAL
     function tukarFilterJadual() {
       const filterVal = document.getElementById('filterLesen').value;
       if (filterVal === "Semua") {
@@ -363,7 +371,6 @@
       paparkanJadualPaging();
     }
 
-    // FUNGSI JADUAL PAGING (5 REKOD PERPAGE)
     function paparkanJadualPaging() {
       const tbody = document.getElementById('tbodyJadualPemandu');
       tbody.innerHTML = "";
@@ -422,6 +429,89 @@
     function tukarHalaman(direction) {
       currentPage += direction;
       paparkanJadualPaging();
+    }
+
+    // FUNGSI KHAS JANA LAPORAN RASMI SENARAI PEMANDU UNTUK CETAKAN (PAGE-BY-PAGE)
+    function janaLaporanDanCetak() {
+      const reportBox = document.getElementById('printReportContainer');
+      reportBox.innerHTML = "";
+
+      const itemsPerPage = 12; // 12 PEMANDU SEHALAMAN UNTUK REKOD KEMAS
+      const dataToPrint = masterDataPemandu;
+      const totalPages = Math.ceil(dataToPrint.length / itemsPerPage) || 1;
+
+      for (let p = 0; p < totalPages; p++) {
+        const startIndex = p * itemsPerPage;
+        const pageItems = dataToPrint.slice(startIndex, startIndex + itemsPerPage);
+
+        let rowsHtml = "";
+        pageItems.forEach((item, index) => {
+          rowsHtml += `
+            <tr>
+              <td style="text-align:center;">${startIndex + index + 1}</td>
+              <td><b>${item.nama}</b><br><small>KP: ${item.noKP}</small></td>
+              <td>${item.ptj}<br><small>Gred: ${item.gred}</small></td>
+              <td style="text-align:center;">${item.ambulans}</td>
+              <td>${item.jenisLesenLengkap}</td>
+              <td>${item.noLesen}</td>
+              <td style="text-align:center;">${item.tarikhLuput}</td>
+              <td style="text-align:center;"><b>${item.statusLuput}</b></td>
+            </tr>
+          `;
+        });
+
+        const pageHtml = `
+          <div class="${p < totalPages - 1 ? 'page-break' : ''}">
+            <div style="text-align:center; margin-bottom:15px; border-bottom:2px solid #000; padding-bottom:10px;">
+              <h2 style="font-size:16pt; font-weight:bold; margin:0;">KEMENTERIAN KESIHATAN MALAYSIA</h2>
+              <h3 style="font-size:12pt; font-weight:bold; margin:5px 0 0 0;">LAPORAN INVENTORI PEMANDU & LESEN VOKASIONAL (GDL/PSV)</h3>
+              <p style="font-size:9pt; margin:3px 0 0 0;">Rujukan Pekeliling: KKM.600-27/12/2 JLD. 19 (15) | Tarikh Cetakan: ${new Date().toLocaleDateString('ms-MY')}</p>
+            </div>
+
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:5%;">Bil</th>
+                  <th style="width:25%;">Nama Pemandu & No. KP</th>
+                  <th style="width:20%;">PTJ & Gred</th>
+                  <th style="width:10%;">Ambulans Gantian</th>
+                  <th style="width:15%;">Lesen Vokasional</th>
+                  <th style="width:10%;">No. Lesen</th>
+                  <th style="width:10%;">Tarikh Luput</th>
+                  <th style="width:5%;">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rowsHtml || '<tr><td colspan="8" style="text-align:center;">Tiada rekod data.</td></tr>'}
+              </tbody>
+            </table>
+
+            <div style="margin-top:20px; display:flex; justify-content:space-between; font-size:9pt;">
+              <div>Halaman ${p + 1} daripada ${totalPages}</div>
+              <div>Dicetak secara automatik dari Sistem Pengurusan Lesen KKM</div>
+            </div>
+
+            ${p === totalPages - 1 ? `
+              <div style="margin-top:40px; display:flex; justify-content:space-between; font-size:10pt;" class="page-break-inside-avoid">
+                <div style="width:40%; text-align:center;">
+                  <p>Disediakan Oleh:</p>
+                  <br><br><br>
+                  <p>___________________________<br><b>(Penyelia Unit Kenderaan / Operasi)</b></p>
+                </div>
+                <div style="width:40%; text-align:center;">
+                  <p>Disahkan Oleh:</p>
+                  <br><br><br>
+                  <p>___________________________<br><b>(Ketua PTJ / Pengarah Hospital)</b></p>
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        `;
+        reportBox.innerHTML += pageHtml;
+      }
+
+      // JALANKAN DIALOG CETAK
+      window.print();
     }
 
     function muatTurunAnalitik() {
