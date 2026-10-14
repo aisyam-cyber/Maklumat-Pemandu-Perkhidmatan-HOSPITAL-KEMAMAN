@@ -6,11 +6,10 @@
   <title>Sistem Pengurusan Lesen Vokasional KKM</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* FORMAT KAWALAN CETAKAN LANDSCAPE RASMI (PENGAMBILAN A4 LANDSCAPE DENGAN LAJUR STATUS KEMAS) */
     @media print {
       @page {
         size: A4 landscape;
-        margin: 10mm;
+        margin: 8mm;
       }
 
       body * {
@@ -54,14 +53,14 @@
       table { 
         width: 100%; 
         border-collapse: collapse !important; 
-        margin-top: 10px;
+        margin-top: 8px;
         table-layout: fixed;
       }
       th, td { 
         border: 1px solid #000 !important; 
-        padding: 6px 8px !important; 
+        padding: 5px 6px !important; 
         text-align: left; 
-        font-size: 9pt !important;
+        font-size: 8.5pt !important;
         word-wrap: break-word;
         white-space: normal;
       }
@@ -127,7 +126,7 @@
           </div>
 
           <div class="border-t border-slate-700 pt-2 my-2">
-            <p class="text-xs text-slate-400 uppercase font-bold mb-2">Pecahan Lesen Vokasional:</p>
+            <p class="text-xs text-slate-400 uppercase font-bold mb-2">Status Lesen Vokasional:</p>
             
             <div class="space-y-2">
               <div class="bg-slate-800/80 p-2 rounded border border-slate-700 flex justify-between items-center">
@@ -143,11 +142,11 @@
                 <span id="statGDLPSV" class="text-sm font-bold text-indigo-300">0</span>
               </div>
               <div class="bg-slate-800/80 p-2 rounded border border-slate-700 flex justify-between items-center">
-                <span class="text-xs text-amber-400">Belum Ada Lesen</span>
+                <span class="text-xs text-amber-400">Belum Ada Vokasional</span>
                 <span id="statTiadaLesen" class="text-sm font-bold text-amber-400">0</span>
               </div>
               <div class="bg-slate-800/80 p-2 rounded border border-slate-700 flex justify-between items-center">
-                <span class="text-xs text-rose-400">Lesen Tamat Tempoh</span>
+                <span class="text-xs text-rose-400">Vokasional Tamat Tempoh</span>
                 <span id="statLesenLuput" class="text-sm font-bold text-rose-400">0</span>
               </div>
             </div>
@@ -182,84 +181,108 @@
           </div>
         </div>
 
-        <form id="pemanduForm" class="space-y-4">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-semibold mb-1">ID Pemandu / No. Pekerja</label>
-              <input type="text" id="idPemandu" required class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500">
+        <form id="pemanduForm" class="space-y-6">
+          
+          <!-- SEKSYEN A: MAKLUMAT PERIBADI -->
+          <div class="border-b pb-4">
+            <h3 class="font-bold text-blue-700 text-sm mb-3">1. MAKLUMAT PERIBADI PEMANDU</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label class="block text-sm font-semibold mb-1">ID Pemandu / No. Pekerja</label>
+                <input type="text" id="idPemandu" required class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500">
+              </div>
+              <div>
+                <label class="block text-sm font-semibold mb-1">Nama Penuh</label>
+                <input type="text" id="nama" required class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500">
+              </div>
             </div>
-            <div>
-              <label class="block text-sm font-semibold mb-1">Nama Penuh</label>
-              <input type="text" id="nama" required class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500">
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              <div>
+                <label class="block text-sm font-semibold mb-1">No. Kad Pengenalan</label>
+                <input type="text" id="noKP" placeholder="880101015555" required class="w-full border p-2 rounded">
+              </div>
+              <div>
+                <label class="block text-sm font-semibold mb-1">No. Telefon Pemandu</label>
+                <input type="text" id="noTel" placeholder="0123456789" required class="w-full border p-2 rounded">
+              </div>
+              <div>
+                <label class="block text-sm font-semibold mb-1">Emel Rasmi</label>
+                <input type="email" id="emel" placeholder="pemandu@moh.gov.my" required class="w-full border p-2 rounded">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-semibold mb-1">Gred Jawatan</label>
+                <input type="text" id="gred" placeholder="H11" required class="w-full border p-2 rounded">
+              </div>
+              <div>
+                <label class="block text-sm font-semibold mb-1">PTJ / Hospital</label>
+                <input type="text" id="ptj" required class="w-full border p-2 rounded">
+              </div>
             </div>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label class="block text-sm font-semibold mb-1">No. Kad Pengenalan</label>
-              <input type="text" id="noKP" placeholder="880101015555" required class="w-full border p-2 rounded">
+          <!-- SEKSYEN B: LESEN MEMANDU KOMPETEN (CDL) -->
+          <div class="border-b pb-4 bg-slate-50 p-4 rounded-lg border">
+            <h3 class="font-bold text-slate-800 text-sm mb-1">2. LESEN MEMANDU KOMPETEN (CDL / BIASA)</h3>
+            <p class="text-xs text-slate-500 mb-3">Tanda kelas lesen biasa yang anda miliki dan tarikh luput CDL berkenaan.</p>
+            
+            <div class="mb-3">
+              <label class="block text-xs font-semibold text-slate-700 mb-2">Kelas Lesen CDL Dimiliki (Tanda jika ada):</label>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-2 bg-white p-3 rounded border">
+                <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="cdlOpt" value="B2" class="rounded"> B2 (Motosikal)</label>
+                <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="cdlOpt" value="B Full" class="rounded"> B Full</label>
+                <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="cdlOpt" value="D" class="rounded"> D (Motokar/Kereta)</label>
+                <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="cdlOpt" value="DA" class="rounded"> DA (Auto)</label>
+                <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="cdlOpt" value="E" class="rounded"> E (Lori/Bas)</label>
+                <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="cdlOpt" value="Lain-lain" class="rounded"> Lain-lain</label>
+              </div>
             </div>
+
             <div>
-              <label class="block text-sm font-semibold mb-1">No. Telefon Pemandu</label>
-              <input type="text" id="noTel" placeholder="0123456789" required class="w-full border p-2 rounded">
-            </div>
-            <div>
-              <label class="block text-sm font-semibold mb-1">Emel Rasmi</label>
-              <input type="email" id="emel" placeholder="pemandu@moh.gov.my" required class="w-full border p-2 rounded">
+              <label class="block text-sm font-semibold mb-1">Tarikh Luput Lesen CDL (Biasa)</label>
+              <input type="date" id="tarikhCDL" required class="w-full border p-2 rounded bg-white">
             </div>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-semibold mb-1">Gred Jawatan</label>
-              <input type="text" id="gred" placeholder="H11" required class="w-full border p-2 rounded">
-            </div>
-            <div>
-              <label class="block text-sm font-semibold mb-1">PTJ / Hospital</label>
-              <input type="text" id="ptj" required class="w-full border p-2 rounded">
-            </div>
-          </div>
+          <!-- SEKSYEN C: LESEN VOKASIONAL (GDL / PSV) -->
+          <div class="border-b pb-4 bg-blue-50/50 p-4 rounded-lg border border-blue-200">
+            <h3 class="font-bold text-blue-900 text-sm mb-1">3. LESEN VOKASIONAL (GDL / PSV - PEKELILING KKM)</h3>
+            <p class="text-xs text-slate-500 mb-3">Maklumat Lesen Vokasional bagi tujuan pemanduan ambulans gantian.</p>
 
-          <div>
-            <label class="block text-sm font-semibold mb-1">Jenis Utama Lesen Vokasional (Pekeliling)</label>
-            <select id="jenisLesen" onchange="kemaskiniMedanLesen()" class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 mb-3">
-              <option value="Tiada">Tiada (Belum Memiliki Lesen Vokasional)</option>
-              <option value="GDL">GDL (Goods Driving Licence)</option>
-              <option value="PSV">PSV (Public Service Vehicle)</option>
-              <option value="GDL & PSV">GDL & PSV (Kedua-dua)</option>
-            </select>
-
-            <label class="block text-xs font-semibold text-slate-600 mb-2">Kelas Lesen CDL / Biasa Dimiliki (Tanda jika ada):</label>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-2 border p-3 rounded bg-slate-50">
-              <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="lesenOpt" value="B2" class="rounded"> B2 (Motosikal)</label>
-              <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="lesenOpt" value="B Full" class="rounded"> B Full</label>
-              <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="lesenOpt" value="D" class="rounded"> D (Motokar/Kereta)</label>
-              <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="lesenOpt" value="DA" class="rounded"> DA (Auto)</label>
-              <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="lesenOpt" value="E" class="rounded"> E (Lori/Bas)</label>
-              <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="lesenOpt" value="Lain-lain" class="rounded"> Lain-lain</label>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-semibold mb-1">Penglibatan Ambulans Gantian</label>
-              <select id="ambulansGantian" class="w-full border p-2 rounded">
-                <option value="Ya">Ya</option>
-                <option value="Tidak">Tidak</option>
+            <div class="mb-3">
+              <label class="block text-sm font-semibold mb-1">Jenis Lesen Vokasional</label>
+              <select id="jenisLesen" onchange="kemaskiniMedanLesen()" class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 bg-white">
+                <option value="Tiada">Tiada (Belum Memiliki Lesen Vokasional)</option>
+                <option value="GDL">GDL (Goods Driving Licence)</option>
+                <option value="PSV">PSV (Public Service Vehicle)</option>
+                <option value="GDL & PSV">GDL & PSV (Kedua-dua)</option>
               </select>
             </div>
-            <div id="boxNoLesen">
-              <label class="block text-sm font-semibold mb-1">No. Lesen Vokasional</label>
-              <input type="text" id="noLesen" class="w-full border p-2 rounded">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+              <div>
+                <label class="block text-sm font-semibold mb-1">Penglibatan Ambulans Gantian</label>
+                <select id="ambulansGantian" class="w-full border p-2 rounded bg-white">
+                  <option value="Ya">Ya</option>
+                  <option value="Tidak">Tidak</option>
+                </select>
+              </div>
+              <div id="boxNoLesen">
+                <label class="block text-sm font-semibold mb-1">No. Lesen Vokasional</label>
+                <input type="text" id="noLesen" class="w-full border p-2 rounded bg-white">
+              </div>
+            </div>
+
+            <div id="boxTarikhLuput">
+              <label class="block text-sm font-semibold mb-1">Tarikh Luput Lesen Vokasional</label>
+              <input type="date" id="tarikhLuput" class="w-full border p-2 rounded bg-white">
             </div>
           </div>
 
-          <div id="boxTarikhLuput">
-            <label class="block text-sm font-semibold mb-1">Tarikh Luput Lesen Vokasional</label>
-            <input type="date" id="tarikhLuput" class="w-full border p-2 rounded">
-          </div>
-
-          <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 rounded hover:bg-blue-700 transition">
+          <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition shadow">
             Hantar Data Pemandu
           </button>
         </form>
@@ -277,7 +300,7 @@
               <option value="GDL">GDL Sahaja</option>
               <option value="PSV">PSV Sahaja</option>
               <option value="GDL & PSV">GDL & PSV</option>
-              <option value="Tiada">Belum Ada Lesen</option>
+              <option value="Tiada">Belum Ada Vokasional</option>
             </select>
           </div>
         </div>
@@ -286,15 +309,14 @@
           <table class="w-full text-left text-xs border-collapse">
             <thead>
               <tr class="bg-slate-100 text-slate-700 border-b">
-                <th class="p-2.5">ID / Nama Pemandu</th>
-                <th class="p-2.5">PTJ</th>
-                <th class="p-2.5">Lesen Vokasional</th>
-                <th class="p-2.5">Luput</th>
-                <th class="p-2.5">Status</th>
+                <th class="p-2.5">Nama Pemandu</th>
+                <th class="p-2.5">Lesen CDL (Luput)</th>
+                <th class="p-2.5">Lesen Vokasional (Luput)</th>
+                <th class="p-2.5">Status Vokasional</th>
               </tr>
             </thead>
             <tbody id="tbodyJadualPemandu" class="divide-y">
-              <tr><td colspan="5" class="p-4 text-center text-slate-400">Muat turun data...</td></tr>
+              <tr><td colspan="4" class="p-4 text-center text-slate-400">Muat turun data...</td></tr>
             </tbody>
           </table>
         </div>
@@ -312,12 +334,11 @@
 
   </div>
 
-  <!-- BEKAS KHAS CETAKAN LAPORAN RASMI -->
+  <!-- BEKAS KHAS CETAKAN LAPORAN RASMI LANDSCAPE -->
   <div id="printReportContainer"></div>
 
   <script>
-    // GANTIKAN DENGAN WEB APP URL GOOGLE APPS SCRIPT ANDA
-    const SCRIPT_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbxsDB0RsDhqRSrwD5zxZ44vnlsA4SEiErdvJO2XGTk2WrPeo-iPl26b2k47DY5j5psN/exec";
+    const SCRIPT_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbxGVpeGmQRGe8ETaUPPHET1SiqVWv8Os8NhD9QfqpEX56PWoRXRgggRYNwTDVjagFYy/exec";
     let currentUser = null;
     let masterDataPemandu = [];
     let filteredDataPemandu = [];
@@ -402,7 +423,7 @@
           document.getElementById('statPSV').innerText = data.countPSVSahaja;
           document.getElementById('statGDLPSV').innerText = data.countGDLPSV;
           document.getElementById('statTiadaLesen').innerText = data.countTiadaLesen;
-          document.getElementById('statLesenLuput').innerText = data.countLuput;
+          document.getElementById('statLesenLuput').innerText = data.countLuputVokasional;
 
           masterDataPemandu = data.senaraiPemandu || [];
           tukarFilterJadual();
@@ -415,7 +436,7 @@
       if (filterVal === "Semua") {
         filteredDataPemandu = masterDataPemandu;
       } else {
-        filteredDataPemandu = masterDataPemandu.filter(p => p.kategoriLesen === filterVal);
+        filteredDataPemandu = masterDataPemandu.filter(p => p.jenisVokasional.indexOf(filterVal) !== -1);
       }
       currentPage = 1;
       paparkanJadualPaging();
@@ -427,7 +448,7 @@
 
       const totalRecords = filteredDataPemandu.length;
       if (totalRecords === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">Tiada rekod dijumpai.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-400">Tiada rekod dijumpai.</td></tr>`;
         document.getElementById('infoPaging').innerText = "Menunjukkan 0 dari 0 rekod";
         document.getElementById('btnPrev').disabled = true;
         document.getElementById('btnNext').disabled = true;
@@ -443,29 +464,24 @@
       const pageData = filteredDataPemandu.slice(startIndex, endIndex);
 
       pageData.forEach(p => {
-        let badgeColor = "bg-slate-100 text-slate-700";
-        if (p.kategoriLesen === "GDL") badgeColor = "bg-blue-100 text-blue-800";
-        if (p.kategoriLesen === "PSV") badgeColor = "bg-purple-100 text-purple-800";
-        if (p.kategoriLesen === "GDL & PSV") badgeColor = "bg-indigo-100 text-indigo-800";
-        if (p.kategoriLesen === "Tiada") badgeColor = "bg-amber-100 text-amber-800";
-
         let statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">Aktif</span>`;
-        if (p.statusLuput === "Tamat Tempoh") {
-          statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800">Tamat Tempoh</span>`;
-        } else if (p.statusLuput === "Belum Memiliki") {
+        if (p.statusVokational === "Luput Vokasional") {
+          statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800">Luput Vokational</span>`;
+        } else if (p.statusVokational === "Belum Memiliki") {
           statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">Belum Ada</span>`;
         }
+
+        let statusCDLStyle = p.statusCDL === "Luput CDL" ? "text-rose-600 font-bold" : "text-slate-600";
 
         const tr = document.createElement('tr');
         tr.className = "hover:bg-slate-50";
         tr.innerHTML = `
           <td class="p-2.5 font-medium">
             <div>${p.nama}</div>
-            <div class="text-[10px] text-slate-400">${p.idPemandu} • ${p.noTel}</div>
+            <div class="text-[10px] text-slate-400">${p.idPemandu} • ${p.ptj}</div>
           </td>
-          <td class="p-2.5 text-slate-600">${p.ptj}</td>
-          <td class="p-2.5"><span class="px-2 py-0.5 rounded text-[10px] font-semibold ${badgeColor}">${p.jenisLesenLengkap}</span></td>
-          <td class="p-2.5 text-slate-600">${p.tarikhLuput}</td>
+          <td class="p-2.5 ${statusCDLStyle}">${p.kelasCDL}<br><small>Luput: ${p.tarikhCDL}</small></td>
+          <td class="p-2.5 text-slate-600">${p.jenisVokasional}<br><small>Luput: ${p.tarikhVokasional}</small></td>
           <td class="p-2.5">${statusBadge}</td>
         `;
         tbody.appendChild(tr);
@@ -481,12 +497,11 @@
       paparkanJadualPaging();
     }
 
-    // FUNGSI JANA LAPORAN RASMI CETAKAN LANDSCAPE DENGAN LEBAR LAJUR DIBETULKAN
+    // FUNGSI JANA LAPORAN CETAKAN RASMI DENGAN DUA TARIKH LUPUT BERASINGAN
     function janaLaporanDanCetak() {
       const reportBox = document.getElementById('printReportContainer');
       reportBox.innerHTML = "";
 
-      // UNTUK LANDSCAPE: 8 ITEM SEHALAMAN SUPAYA CUKUP RUANG TANPA TERPOTONG
       const itemsPerPage = 8; 
       const dataToPrint = masterDataPemandu;
       const totalPages = Math.ceil(dataToPrint.length / itemsPerPage) || 1;
@@ -503,10 +518,10 @@
               <td><b>${item.nama}</b><br><small>KP: ${item.noKP}</small></td>
               <td>${item.ptj}<br><small>Gred: ${item.gred}</small></td>
               <td style="text-align:center;">${item.ambulans}</td>
-              <td>${item.jenisLesenLengkap}</td>
-              <td>${item.noLesen}</td>
-              <td style="text-align:center;">${item.tarikhLuput}</td>
-              <td style="text-align:center;"><b>${item.statusLuput}</b></td>
+              <td><b>${item.kelasCDL}</b><br><small>Luput: ${item.tarikhCDL}</small></td>
+              <td><b>${item.jenisVokasional}</b><br><small>No: ${item.noVokasional}</small></td>
+              <td style="text-align:center;">${item.tarikhVokasional}</td>
+              <td style="text-align:center;"><b>${item.statusVokational}</b></td>
             </tr>
           `;
         });
@@ -518,7 +533,7 @@
           <div class="${pageClass}" style="padding:5px 0;">
             <div style="text-align:center; margin-bottom:10px; border-bottom:2px solid #000; padding-bottom:6px;">
               <h2 style="font-size:15pt; font-weight:bold; margin:0;">KEMENTERIAN KESIHATAN MALAYSIA</h2>
-              <h3 style="font-size:11pt; font-weight:bold; margin:2px 0 0 0;">LAPORAN INVENTORI PEMANDU & LESEN VOKASIONAL (GDL/PSV)</h3>
+              <h3 style="font-size:11pt; font-weight:bold; margin:2px 0 0 0;">LAPORAN INVENTORI PEMANDU & LESEN VOKASIONAL (GDL/PSV) & CDL</h3>
               <p style="font-size:8pt; margin:2px 0 0 0;">Rujukan Pekeliling: KKM.600-27/12/2 JLD. 19 (15) | Tarikh Cetakan: ${new Date().toLocaleDateString('ms-MY')}</p>
             </div>
 
@@ -526,13 +541,13 @@
               <thead>
                 <tr>
                   <th style="width:4%;">Bil</th>
-                  <th style="width:28%;">Nama Pemandu & No. KP</th>
-                  <th style="width:18%;">PTJ & Gred</th>
+                  <th style="width:25%;">Nama Pemandu & No. KP</th>
+                  <th style="width:16%;">PTJ & Gred</th>
                   <th style="width:8%;">Ambulans Gantian</th>
-                  <th style="width:18%;">Lesen Vokasional</th>
-                  <th style="width:10%;">No. Lesen</th>
-                  <th style="width:12%;">Tarikh Luput</th>
-                  <th style="width:12%;">Status</th>
+                  <th style="width:16%;">Lesen CDL (Tarikh Luput)</th>
+                  <th style="width:15%;">Lesen Vokasional</th>
+                  <th style="width:11%;">Luput Vokasional</th>
+                  <th style="width:10%;">Status Vokational</th>
                 </tr>
               </thead>
               <tbody>
@@ -588,7 +603,7 @@
       csvContent += `Memiliki Lesen PSV Sahaja,${jPSV}\n`;
       csvContent += `Memiliki Lesen GDL & PSV,${jGDLPSV}\n`;
       csvContent += `Belum Memiliki Lesen Vokasional,${jTiada}\n`;
-      csvContent += `Lesen Tamat Tempoh,${jLuput}\n`;
+      csvContent += `Lesen Vokasional Tamat Tempoh,${jLuput}\n`;
 
       const encodedUri = encodeURI(csvContent);
       const link = document.createElement("a");
@@ -599,21 +614,16 @@
       document.body.removeChild(link);
     }
 
-    // SIMPAN DATA PEMANDU DENGAN MESEJ DUPLICATE
+    // SIMPAN DATA PEMANDU DENGAN DUA TARIKH LUPUT
     document.getElementById('pemanduForm').addEventListener('submit', function(e) {
       e.preventDefault();
       
-      const utamaLesen = document.getElementById('jenisLesen').value;
-      const lesenTambahan = Array.from(document.querySelectorAll('input[name="lesenOpt"]:checked'))
-                                 .map(cb => cb.value);
+      const cdlTambahan = Array.from(document.querySelectorAll('input[name="cdlOpt"]:checked'))
+                               .map(cb => cb.value).join(', ');
       
-      let gabungLesen = utamaLesen;
-      if (lesenTambahan.length > 0) {
-        gabungLesen += ` (${lesenTambahan.join(', ')})`;
-      }
-
-      const noLesenVal = document.getElementById('noLesen').value || "Tiada";
-      const tarikhLuputVal = document.getElementById('tarikhLuput').value || "Tiada";
+      const jenisVokasionalVal = document.getElementById('jenisLesen').value;
+      const noVokasionalVal = document.getElementById('noLesen').value || "Tiada";
+      const tarikhVokasionalVal = document.getElementById('tarikhLuput').value || "Tiada";
 
       const payload = {
         action: "simpanPemandu",
@@ -625,10 +635,15 @@
         gred: document.getElementById('gred').value,
         ptj: document.getElementById('ptj').value,
         ambulansGantian: document.getElementById('ambulansGantian').value,
-        jenisLesen: gabungLesen,
-        noLesen: noLesenVal,
-        tarikhLuput: tarikhLuputVal,
-        statusLesen: utamaLesen === "Tiada" ? "Belum Memiliki" : "Aktif"
+        
+        kelasCDL: cdlTambahan || "D",
+        tarikhCDL: document.getElementById('tarikhCDL').value,
+        
+        jenisVokasional: jenisVokasionalVal,
+        noVokasional: noVokasionalVal,
+        tarikhVokasional: tarikhVokasionalVal,
+        
+        statusKelayakan: jenisVokasionalVal === "Tiada" ? "Belum Memiliki Vokasional" : "Aktif"
       };
 
       fetch(SCRIPT_URL, {
