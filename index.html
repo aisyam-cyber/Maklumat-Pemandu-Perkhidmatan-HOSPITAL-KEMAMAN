@@ -47,7 +47,7 @@
   <!-- APLIKASI UTAMA -->
   <div id="appContainer" class="hidden flex flex-col md:flex-row min-h-screen">
     
-    <!-- SIDEBAR ANALITIK (PENYELIA SAHAJA) -->
+    <!-- SIDEBAR ANALITIK (UNTUK PENYELIA SAHAJA) -->
     <aside id="sidebarAnalitik" class="w-full md:w-80 bg-slate-900 text-white p-6 no-print flex-col justify-between hidden md:flex">
       <div>
         <div class="flex justify-between items-center border-b border-slate-700 pb-3 mb-6">
@@ -88,7 +88,7 @@
       </div>
     </aside>
 
-    <!-- BORANG PEMANDU -->
+    <!-- KANDUNGAN UTAMA / BORANG PEMANDU -->
     <main class="flex-1 p-6 print-area">
       <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-md">
         
@@ -141,7 +141,7 @@
             </div>
           </div>
 
-          <!-- DROPDOWN & CHECKBOX PENGELASAN LESEN -->
+          <!-- PENGELASAN LESEN -->
           <div>
             <label class="block text-sm font-semibold mb-1">Jenis Utama Lesen Vokasional (Pekeliling)</label>
             <select id="jenisLesen" class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 mb-3">
@@ -190,10 +190,11 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbxy10HLEN09JKGH9Gr3a1LLHWAQVTw6CiHnz3tKCYgjyiz1eaQaKuq0skV9jCy65GPC/exec";
+    // GANTIKAN DENGAN WEB APP URL GOOGLE APPS SCRIPT ANDA
+    const SCRIPT_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbzMlLW_025R0pr2qqCHtGsqXKEYwPbwihSTBfSMH8o4o9LJ0es9MWO3UFXOiFUhzHnt/exec";
     let currentUser = null;
 
-    // LOG MASUK
+    // 1. LOG MASUK
     document.getElementById('loginForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const btn = document.getElementById('btnLogin');
@@ -205,7 +206,7 @@
 
       fetch(SCRIPT_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({ action: "login", username: usernameVal, password: passwordVal })
       })
       .then(res => res.json())
@@ -241,6 +242,7 @@
       location.reload();
     }
 
+    // 2. KEMASKINI ANALITIK SIDEBAR
     function kemaskiniDashboard() {
       fetch(`${SCRIPT_URL}?action=getAnalitik`)
         .then(res => res.json())
@@ -249,9 +251,11 @@
           document.getElementById('statAmbulansGantian').innerText = data.pemanduAmbulansGantian;
           document.getElementById('statLesenLuput').innerText = data.lesenLuput;
           document.getElementById('statJumlahTuntutan').innerText = `RM ${data.jumlahTuntutanRM}`;
-        });
+        })
+        .catch(err => console.log("Gagal muat analitik:", err));
     }
 
+    // 3. MUAT TURUN LAPORAN CSV
     function muatTurunAnalitik() {
       const jPemandu = document.getElementById('statJumlahPemandu').innerText;
       const jAmbulans = document.getElementById('statAmbulansGantian').innerText;
@@ -276,6 +280,7 @@
       document.body.removeChild(link);
     }
 
+    // 4. SIMPAN DATA PEMANDU
     document.getElementById('pemanduForm').addEventListener('submit', function(e) {
       e.preventDefault();
       
@@ -306,11 +311,11 @@
 
       fetch(SCRIPT_URL, {
         method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(payload)
       })
-      .then(() => {
+      .then(res => res.json())
+      .then(data => {
         alert('Data pemandu berjaya dihantar!');
         document.getElementById('pemanduForm').reset();
         if (currentUser && currentUser.role === "Penyelia") {
