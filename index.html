@@ -6,21 +6,60 @@
   <title>Sistem Pengurusan Lesen Vokasional KKM</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* FORMAT FORMAT CETAKAN RASMI (PRINT LAYOUT) */
+    /* FORMAT KAWALAN CETAKAN RASMI (PRINT LAYOUT STRICT) */
     @media print {
-      body { background-color: white !important; font-size: 11pt; color: black; }
-      .no-print { display: none !important; }
-      .print-only { display: block !important; }
+      /* Sembunyikan semua elemen web yang tidak berkenaan semasa mencetak */
+      body * {
+        visibility: hidden !important;
+      }
       
-      /* Kawalan Halaman Cetakan */
-      .page-break { page-break-after: always; break-after: page; }
-      .page-break-inside-avoid { page-break-inside: avoid; }
+      /* Hanya paparkan container laporan rasmi sahaja */
+      #printReportContainer, #printReportContainer * {
+        visibility: visible !important;
+      }
+
+      #printReportContainer {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background-color: white !important;
+        color: black !important;
+      }
+
+      .no-print { 
+        display: none !important; 
+      }
+
+      /* Kawalan Pemisahan Halaman Kemas */
+      .page-break { 
+        page-break-after: always !important; 
+        break-after: page !important; 
+      }
       
-      table { width: 100%; border-collapse: collapse; }
-      th, td { border: 1px solid #000 !important; padding: 6px !important; text-align: left; }
-      th { background-color: #f2f2f2 !important; }
+      .page-break-inside-avoid { 
+        page-break-inside: avoid !important; 
+        break-inside: avoid !important; 
+      }
+      
+      table { 
+        width: 100%; 
+        border-collapse: collapse !important; 
+        margin-top: 10px;
+      }
+      th, td { 
+        border: 1px solid #000 !important; 
+        padding: 5px 8px !important; 
+        text-align: left; 
+        font-size: 10pt !important;
+      }
+      th { 
+        background-color: #f2f2f2 !important; 
+        -webkit-print-color-adjust: exact;
+      }
     }
-    .print-only { display: none; }
   </style>
 </head>
 <body class="bg-slate-100 min-h-screen">
@@ -55,7 +94,7 @@
   </div>
 
   <!-- APLIKASI UTAMA (PAPARAN SKRIN WEB) -->
-  <div id="appContainer" class="hidden flex flex-col md:flex-row min-h-screen">
+  <div id="appContainer" class="hidden flex flex-col md:flex-row min-h-screen no-print">
     
     <!-- SIDEBAR ANALITIK (PENYELIA SAHAJA) -->
     <aside id="sidebarAnalitik" class="w-full md:w-80 bg-slate-900 text-white p-6 no-print flex-col justify-between hidden md:flex">
@@ -118,10 +157,10 @@
     </aside>
 
     <!-- KANDUNGAN UTAMA / BORANG & JADUAL SKRIN -->
-    <main class="flex-1 p-6 space-y-6">
+    <main class="flex-1 p-6 space-y-6 no-print">
       
       <!-- BORANG PEMANDU -->
-      <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-md no-print">
+      <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-md">
         <div class="flex justify-between items-center mb-6 border-b pb-4">
           <div>
             <h2 class="text-2xl font-bold text-slate-800">Pendaftaran Pemandu & Lesen Vokasional</h2>
@@ -216,7 +255,7 @@
         </form>
       </div>
 
-      <!-- JADUAL INTERAKTIF WEB (PAGING 5 PERPAGE) -->
+      <!-- JADUAL INTERAKTIF WEB -->
       <div id="sectionJadualPemandu" class="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-md hidden no-print">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4 border-b pb-3">
           <h3 class="text-lg font-bold text-slate-800">📋 Senarai Rekod Pemandu</h3>
@@ -263,11 +302,11 @@
 
   </div>
 
-  <!-- BEKAS KHAS CETAKAN LAPORAN RASMI (PRINT CONTAINER PAGE-BY-PAGE) -->
-  <div id="printReportContainer" class="print-only p-4"></div>
+  <!-- BEKAS KHAS CETAKAN LAPORAN RASMI -->
+  <div id="printReportContainer"></div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbyIDz7dV-oYTu4qBld5_s2bQ40AUhrlv_70ldx2mHW_mPvbeLxSwlpbjQXhQfg_ka3J/exec";
+    const SCRIPT_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbx82nRVcAIjoO3XJepGkPWhPGoIHHQbInruWd5xm_QwogeF0UsddXaz-SxZdMJXenY/exec";
     let currentUser = null;
     let masterDataPemandu = [];
     let filteredDataPemandu = [];
@@ -431,12 +470,12 @@
       paparkanJadualPaging();
     }
 
-    // FUNGSI KHAS JANA LAPORAN RASMI SENARAI PEMANDU UNTUK CETAKAN (PAGE-BY-PAGE)
+    // FUNGSI JANA LAPORAN RASMI CETAKAN TANPA HALAMAN KOSONG DI HADAPAN
     function janaLaporanDanCetak() {
       const reportBox = document.getElementById('printReportContainer');
       reportBox.innerHTML = "";
 
-      const itemsPerPage = 12; // 12 PEMANDU SEHALAMAN UNTUK REKOD KEMAS
+      const itemsPerPage = 12; // 12 PEMANDU SEHALAMAN
       const dataToPrint = masterDataPemandu;
       const totalPages = Math.ceil(dataToPrint.length / itemsPerPage) || 1;
 
@@ -460,12 +499,16 @@
           `;
         });
 
+        // HANYA LETAK PAGE-BREAK BAGI HALAMAN SELEPAS HALAMAN 1
+        const isLastPage = p === totalPages - 1;
+        const pageClass = isLastPage ? '' : 'page-break';
+
         const pageHtml = `
-          <div class="${p < totalPages - 1 ? 'page-break' : ''}">
+          <div class="${pageClass}" style="padding-top:10px;">
             <div style="text-align:center; margin-bottom:15px; border-bottom:2px solid #000; padding-bottom:10px;">
-              <h2 style="font-size:16pt; font-weight:bold; margin:0;">KEMENTERIAN KESIHATAN MALAYSIA</h2>
-              <h3 style="font-size:12pt; font-weight:bold; margin:5px 0 0 0;">LAPORAN INVENTORI PEMANDU & LESEN VOKASIONAL (GDL/PSV)</h3>
-              <p style="font-size:9pt; margin:3px 0 0 0;">Rujukan Pekeliling: KKM.600-27/12/2 JLD. 19 (15) | Tarikh Cetakan: ${new Date().toLocaleDateString('ms-MY')}</p>
+              <h2 style="font-size:15pt; font-weight:bold; margin:0;">KEMENTERIAN KESIHATAN MALAYSIA</h2>
+              <h3 style="font-size:11pt; font-weight:bold; margin:4px 0 0 0;">LAPORAN INVENTORI PEMANDU & LESEN VOKASIONAL (GDL/PSV)</h3>
+              <p style="font-size:8pt; margin:3px 0 0 0;">Rujukan Pekeliling: KKM.600-27/12/2 JLD. 19 (15) | Tarikh Cetakan: ${new Date().toLocaleDateString('ms-MY')}</p>
             </div>
 
             <table>
@@ -486,21 +529,21 @@
               </tbody>
             </table>
 
-            <div style="margin-top:20px; display:flex; justify-content:space-between; font-size:9pt;">
+            <div style="margin-top:15px; display:flex; justify-content:space-between; font-size:8pt;">
               <div>Halaman ${p + 1} daripada ${totalPages}</div>
               <div>Dicetak secara automatik dari Sistem Pengurusan Lesen KKM</div>
             </div>
 
-            ${p === totalPages - 1 ? `
-              <div style="margin-top:40px; display:flex; justify-content:space-between; font-size:10pt;" class="page-break-inside-avoid">
+            ${isLastPage ? `
+              <div style="margin-top:30px; display:flex; justify-content:space-between; font-size:9pt;" class="page-break-inside-avoid">
                 <div style="width:40%; text-align:center;">
                   <p>Disediakan Oleh:</p>
-                  <br><br><br>
+                  <br><br>
                   <p>___________________________<br><b>(Penyelia Unit Kenderaan / Operasi)</b></p>
                 </div>
                 <div style="width:40%; text-align:center;">
                   <p>Disahkan Oleh:</p>
-                  <br><br><br>
+                  <br><br>
                   <p>___________________________<br><b>(Ketua PTJ / Pengarah Hospital)</b></p>
                 </div>
               </div>
@@ -510,8 +553,10 @@
         reportBox.innerHTML += pageHtml;
       }
 
-      // JALANKAN DIALOG CETAK
-      window.print();
+      // MASA PENANGGUHAN SINGKAT UNTUK MEMASTIKAN DOM SIAP SEBELUM PRINT
+      setTimeout(() => {
+        window.print();
+      }, 300);
     }
 
     function muatTurunAnalitik() {
