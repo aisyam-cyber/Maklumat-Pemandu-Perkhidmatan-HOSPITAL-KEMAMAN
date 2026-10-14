@@ -6,14 +6,12 @@
   <title>Sistem Pengurusan Lesen Vokasional KKM</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* FORMAT KAWALAN CETAKAN RASMI (PRINT LAYOUT STRICT) */
+    /* FORMAT KAWALAN CETAKAN RASMI */
     @media print {
-      /* Sembunyikan semua elemen web yang tidak berkenaan semasa mencetak */
       body * {
         visibility: hidden !important;
       }
       
-      /* Hanya paparkan container laporan rasmi sahaja */
       #printReportContainer, #printReportContainer * {
         visibility: visible !important;
       }
@@ -33,7 +31,6 @@
         display: none !important; 
       }
 
-      /* Kawalan Pemisahan Halaman Kemas */
       .page-break { 
         page-break-after: always !important; 
         break-after: page !important; 
@@ -306,7 +303,8 @@
   <div id="printReportContainer"></div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbx82nRVcAIjoO3XJepGkPWhPGoIHHQbInruWd5xm_QwogeF0UsddXaz-SxZdMJXenY/exec";
+    // GANTIKAN DENGAN WEB APP URL GOOGLE APPS SCRIPT ANDA
+    const SCRIPT_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbxsDB0RsDhqRSrwD5zxZ44vnlsA4SEiErdvJO2XGTk2WrPeo-iPl26b2k47DY5j5psN/exec";
     let currentUser = null;
     let masterDataPemandu = [];
     let filteredDataPemandu = [];
@@ -499,7 +497,6 @@
           `;
         });
 
-        // HANYA LETAK PAGE-BREAK BAGI HALAMAN SELEPAS HALAMAN 1
         const isLastPage = p === totalPages - 1;
         const pageClass = isLastPage ? '' : 'page-break';
 
@@ -553,7 +550,6 @@
         reportBox.innerHTML += pageHtml;
       }
 
-      // MASA PENANGGUHAN SINGKAT UNTUK MEMASTIKAN DOM SIAP SEBELUM PRINT
       setTimeout(() => {
         window.print();
       }, 300);
@@ -589,7 +585,7 @@
       document.body.removeChild(link);
     }
 
-    // SIMPAN DATA PEMANDU
+    // SIMPAN DATA PEMANDU DENGAN MESEJ DUPLICATE
     document.getElementById('pemanduForm').addEventListener('submit', function(e) {
       e.preventDefault();
       
@@ -628,14 +624,20 @@
       })
       .then(res => res.json())
       .then(data => {
-        alert('Data pemandu berjaya dihantar!');
-        document.getElementById('pemanduForm').reset();
-        kemaskiniMedanLesen();
-        if (currentUser && currentUser.role === "Penyelia") {
-          setTimeout(kemaskiniDashboard, 2000);
+        if (data.result === "duplicate") {
+          alert("⚠️ DATA REJECTED:\n\n" + data.message);
+        } else if (data.result === "success") {
+          alert('✅ Data pemandu berjaya dihantar!');
+          document.getElementById('pemanduForm').reset();
+          kemaskiniMedanLesen();
+          if (currentUser && currentUser.role === "Penyelia") {
+            setTimeout(kemaskiniDashboard, 2000);
+          }
+        } else {
+          alert("Ralat: " + data.message);
         }
       })
-      .catch(error => alert('Ralat: ' + error));
+      .catch(error => alert('Ralat sambungan: ' + error));
     });
   </script>
 </body>
