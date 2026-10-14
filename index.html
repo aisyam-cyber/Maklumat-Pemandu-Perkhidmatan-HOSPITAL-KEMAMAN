@@ -47,51 +47,70 @@
   <!-- APLIKASI UTAMA -->
   <div id="appContainer" class="hidden flex flex-col md:flex-row min-h-screen">
     
-    <!-- SIDEBAR ANALITIK (UNTUK PENYELIA SAHAJA) -->
+    <!-- SIDEBAR ANALITIK (PENYELIA SAHAJA) -->
     <aside id="sidebarAnalitik" class="w-full md:w-80 bg-slate-900 text-white p-6 no-print flex-col justify-between hidden md:flex">
       <div>
-        <div class="flex justify-between items-center border-b border-slate-700 pb-3 mb-6">
-          <h1 class="text-xl font-bold text-blue-400">📊 Analitik Data</h1>
+        <div class="flex justify-between items-center border-b border-slate-700 pb-3 mb-4">
+          <h1 class="text-xl font-bold text-blue-400">📊 Analitik Lesen</h1>
           <button onclick="kemaskiniDashboard()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded border border-slate-600">🔄 Muat Semula</button>
         </div>
 
-        <div class="space-y-4">
-          <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-            <p class="text-xs text-slate-400 uppercase font-semibold">Jumlah Pemandu Berdaftar</p>
-            <p id="statJumlahPemandu" class="text-2xl font-bold text-white">0</p>
+        <!-- PECAHAN ANALITIK KATEGORI LESEN -->
+        <div class="space-y-3">
+          <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 flex justify-between items-center">
+            <span class="text-xs text-slate-300 font-medium">Jumlah Pemandu</span>
+            <span id="statJumlahPemandu" class="text-lg font-bold text-white">0</span>
           </div>
 
-          <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-            <p class="text-xs text-slate-400 uppercase font-semibold">Memandu Ambulans Gantian</p>
-            <p id="statAmbulansGantian" class="text-2xl font-bold text-emerald-400">0</p>
+          <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 flex justify-between items-center">
+            <span class="text-xs text-emerald-400 font-medium">Ambulans Gantian (Ya)</span>
+            <span id="statAmbulansGantian" class="text-lg font-bold text-emerald-400">0</span>
           </div>
 
-          <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-            <p class="text-xs text-slate-400 uppercase font-semibold">Belum Ada Lesen Vokasional</p>
-            <p id="statTiadaLesen" class="text-2xl font-bold text-amber-400">0</p>
-          </div>
-
-          <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
-            <p class="text-xs text-slate-400 uppercase font-semibold">Lesen Tamat Tempoh</p>
-            <p id="statLesenLuput" class="text-2xl font-bold text-rose-400">0</p>
+          <div class="border-t border-slate-700 pt-2 my-2">
+            <p class="text-xs text-slate-400 uppercase font-bold mb-2">Pecahan Lesen Vokasional:</p>
+            
+            <div class="space-y-2">
+              <div class="bg-slate-800/80 p-2 rounded border border-slate-700 flex justify-between items-center">
+                <span class="text-xs text-blue-300">GDL Sahaja</span>
+                <span id="statGDL" class="text-sm font-bold text-blue-300">0</span>
+              </div>
+              <div class="bg-slate-800/80 p-2 rounded border border-slate-700 flex justify-between items-center">
+                <span class="text-xs text-purple-300">PSV Sahaja</span>
+                <span id="statPSV" class="text-sm font-bold text-purple-300">0</span>
+              </div>
+              <div class="bg-slate-800/80 p-2 rounded border border-slate-700 flex justify-between items-center">
+                <span class="text-xs text-indigo-300">GDL & PSV (Kedua-dua)</span>
+                <span id="statGDLPSV" class="text-sm font-bold text-indigo-300">0</span>
+              </div>
+              <div class="bg-slate-800/80 p-2 rounded border border-slate-700 flex justify-between items-center">
+                <span class="text-xs text-amber-400">Belum Ada Lesen</span>
+                <span id="statTiadaLesen" class="text-sm font-bold text-amber-400">0</span>
+              </div>
+              <div class="bg-slate-800/80 p-2 rounded border border-slate-700 flex justify-between items-center">
+                <span class="text-xs text-rose-400">Lesen Tamat Tempoh</span>
+                <span id="statLesenLuput" class="text-sm font-bold text-rose-400">0</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="mt-8 space-y-3 pt-4 border-t border-slate-700">
-        <button onclick="muatTurunAnalitik()" class="w-full bg-slate-700 hover:bg-slate-600 text-white font-medium py-2 px-4 rounded flex items-center justify-center gap-2 transition">
+      <div class="mt-6 space-y-2 pt-3 border-t border-slate-700">
+        <button onclick="muatTurunAnalitik()" class="w-full bg-slate-700 hover:bg-slate-600 text-xs text-white font-medium py-2 px-3 rounded flex items-center justify-center gap-2 transition">
           📥 Muat Turun Ringkasan (CSV)
         </button>
-        <button onclick="window.print()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded flex items-center justify-center gap-2 transition">
+        <button onclick="window.print()" class="w-full bg-blue-600 hover:bg-blue-700 text-xs text-white font-medium py-2 px-3 rounded flex items-center justify-center gap-2 transition">
           🖨️ Cetak Laporan Analisis
         </button>
       </div>
     </aside>
 
-    <!-- BORANG PEMANDU -->
-    <main class="flex-1 p-6 print-area">
+    <!-- KANDUNGAN UTAMA / BORANG & JADUAL PAGING -->
+    <main class="flex-1 p-6 print-area space-y-6">
+      
+      <!-- BORANG PEMANDU -->
       <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-md">
-        
         <div class="flex justify-between items-center mb-6 border-b pb-4">
           <div>
             <h2 class="text-2xl font-bold text-slate-800">Pendaftaran Pemandu & Lesen Vokasional</h2>
@@ -186,14 +205,64 @@
           </button>
         </form>
       </div>
+
+      <!-- JADUAL SENARAI PEMANDU DENGAN PAGING (PENYELIA SAHAJA) -->
+      <div id="sectionJadualPemandu" class="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-md hidden no-print">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4 border-b pb-3">
+          <h3 class="text-lg font-bold text-slate-800">📋 Senarai Rekod Pemandu</h3>
+          
+          <!-- TAPISAN / FILTER -->
+          <div class="flex items-center gap-2">
+            <label class="text-xs font-semibold text-slate-600">Tapis Lesen:</label>
+            <select id="filterLesen" onchange="tukarFilterJadual()" class="border text-xs p-1.5 rounded bg-slate-50">
+              <option value="Semua">Semua Kategori</option>
+              <option value="GDL">GDL Sahaja</option>
+              <option value="PSV">PSV Sahaja</option>
+              <option value="GDL & PSV">GDL & PSV</option>
+              <option value="Tiada">Belum Ada Lesen</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- JADUAL DATA -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="bg-slate-100 text-slate-700 border-b">
+                <th class="p-2.5">ID / Nama Pemandu</th>
+                <th class="p-2.5">PTJ</th>
+                <th class="p-2.5">Lesen Vokasional</th>
+                <th class="p-2.5">Luput</th>
+                <th class="p-2.5">Status</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyJadualPemandu" class="divide-y">
+              <tr><td colspan="5" class="p-4 text-center text-slate-400">Muat turun data...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- KAWALAN PAGING (5 REKOD PERPAGE) -->
+        <div class="flex justify-between items-center mt-4 border-t pt-3 text-xs">
+          <span id="infoPaging" class="text-slate-500">Menunjukkan 0-0 dari 0 rekod</span>
+          <div class="flex gap-2">
+            <button id="btnPrev" onclick="tukarHalaman(-1)" class="bg-slate-200 hover:bg-slate-300 px-3 py-1 rounded font-semibold text-slate-700 disabled:opacity-50">Sebelumnya</button>
+            <button id="btnNext" onclick="tukarHalaman(1)" class="bg-slate-200 hover:bg-slate-300 px-3 py-1 rounded font-semibold text-slate-700 disabled:opacity-50">Seterusnya</button>
+          </div>
+        </div>
+      </div>
+
     </main>
 
   </div>
 
   <script>
-    // GANTIKAN DENGAN WEB APP URL GOOGLE APPS SCRIPT ANDA
-    const SCRIPT_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbyrMM6S70L21T2zIlmofPs1KbulEObqJYBZLjisHtwSBnzimfdryHGe4zPZUDR2ssOs/exec";
+    const SCRIPT_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbzott_62zL01u449jjR-X8KmB03Pjxzh6GqOwDrygGKq2ES4I-MYyq9kYofDASJDn8/exec";
     let currentUser = null;
+    let masterDataPemandu = [];
+    let filteredDataPemandu = [];
+    let currentPage = 1;
+    const pageSize = 5; // 5 REKOD PER HALAMAN
 
     function kemaskiniMedanLesen() {
       const v = document.getElementById('jenisLesen').value;
@@ -212,7 +281,7 @@
       }
     }
 
-    // LOG MASUK (NEUTRAL CASE)
+    // LOG MASUK
     document.getElementById('loginForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const btn = document.getElementById('btnLogin');
@@ -240,9 +309,11 @@
 
           if (data.role === "Penyelia") {
             document.getElementById('sidebarAnalitik').classList.remove('hidden');
+            document.getElementById('sectionJadualPemandu').classList.remove('hidden');
             kemaskiniDashboard();
           } else {
             document.getElementById('sidebarAnalitik').classList.add('hidden');
+            document.getElementById('sectionJadualPemandu').classList.add('hidden');
             document.getElementById('idPemandu').value = data.username;
           }
           kemaskiniMedanLesen();
@@ -261,21 +332,104 @@
       location.reload();
     }
 
+    // KEMASKINI DASHBOARD ANALITIK & JADUAL
     function kemaskiniDashboard() {
       fetch(`${SCRIPT_URL}?action=getAnalitik`)
         .then(res => res.json())
         .then(data => {
           document.getElementById('statJumlahPemandu').innerText = data.jumlahPemandu;
           document.getElementById('statAmbulansGantian').innerText = data.pemanduAmbulansGantian;
-          document.getElementById('statTiadaLesen').innerText = data.tiadaLesenVokasional;
-          document.getElementById('statLesenLuput').innerText = data.lesenLuput;
+          document.getElementById('statGDL').innerText = data.countGDLSahaja;
+          document.getElementById('statPSV').innerText = data.countPSVSahaja;
+          document.getElementById('statGDLPSV').innerText = data.countGDLPSV;
+          document.getElementById('statTiadaLesen').innerText = data.countTiadaLesen;
+          document.getElementById('statLesenLuput').innerText = data.countLuput;
+
+          masterDataPemandu = data.senaraiPemandu || [];
+          tukarFilterJadual();
         })
         .catch(err => console.log("Gagal muat analitik:", err));
+    }
+
+    // FUNGSI TAPISAN JADUAL
+    function tukarFilterJadual() {
+      const filterVal = document.getElementById('filterLesen').value;
+      if (filterVal === "Semua") {
+        filteredDataPemandu = masterDataPemandu;
+      } else {
+        filteredDataPemandu = masterDataPemandu.filter(p => p.kategoriLesen === filterVal);
+      }
+      currentPage = 1;
+      paparkanJadualPaging();
+    }
+
+    // FUNGSI JADUAL PAGING (5 REKOD PERPAGE)
+    function paparkanJadualPaging() {
+      const tbody = document.getElementById('tbodyJadualPemandu');
+      tbody.innerHTML = "";
+
+      const totalRecords = filteredDataPemandu.length;
+      if (totalRecords === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">Tiada rekod dijumpai.</td></tr>`;
+        document.getElementById('infoPaging').innerText = "Menunjukkan 0 dari 0 rekod";
+        document.getElementById('btnPrev').disabled = true;
+        document.getElementById('btnNext').disabled = true;
+        return;
+      }
+
+      const totalPages = Math.ceil(totalRecords / pageSize);
+      if (currentPage > totalPages) currentPage = totalPages;
+      if (currentPage < 1) currentPage = 1;
+
+      const startIndex = (currentPage - 1) * pageSize;
+      const endIndex = Math.min(startIndex + pageSize, totalRecords);
+      const pageData = filteredDataPemandu.slice(startIndex, endIndex);
+
+      pageData.forEach(p => {
+        let badgeColor = "bg-slate-100 text-slate-700";
+        if (p.kategoriLesen === "GDL") badgeColor = "bg-blue-100 text-blue-800";
+        if (p.kategoriLesen === "PSV") badgeColor = "bg-purple-100 text-purple-800";
+        if (p.kategoriLesen === "GDL & PSV") badgeColor = "bg-indigo-100 text-indigo-800";
+        if (p.kategoriLesen === "Tiada") badgeColor = "bg-amber-100 text-amber-800";
+
+        let statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">Aktif</span>`;
+        if (p.statusLuput === "Tamat Tempoh") {
+          statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800">Tamat Tempoh</span>`;
+        } else if (p.statusLuput === "Belum Memiliki") {
+          statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">Belum Ada</span>`;
+        }
+
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-50";
+        tr.innerHTML = `
+          <td class="p-2.5 font-medium">
+            <div>${p.nama}</div>
+            <div class="text-[10px] text-slate-400">${p.idPemandu} • ${p.noTel}</div>
+          </td>
+          <td class="p-2.5 text-slate-600">${p.ptj}</td>
+          <td class="p-2.5"><span class="px-2 py-0.5 rounded text-[10px] font-semibold ${badgeColor}">${p.jenisLesenLengkap}</span></td>
+          <td class="p-2.5 text-slate-600">${p.tarikhLuput}</td>
+          <td class="p-2.5">${statusBadge}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('infoPaging').innerText = `Menunjukkan ${startIndex + 1}-${endIndex} dari ${totalRecords} rekod (Halaman ${currentPage}/${totalPages})`;
+      document.getElementById('btnPrev').disabled = currentPage === 1;
+      document.getElementById('btnNext').disabled = currentPage === totalPages;
+    }
+
+    function tukarHalaman(direction) {
+      currentPage += direction;
+      paparkanJadualPaging();
     }
 
     function muatTurunAnalitik() {
       const jPemandu = document.getElementById('statJumlahPemandu').innerText;
       const jAmbulans = document.getElementById('statAmbulansGantian').innerText;
+      const jGDL = document.getElementById('statGDL').innerText;
+      const jPSV = document.getElementById('statPSV').innerText;
+      const jGDLPSV = document.getElementById('statGDLPSV').innerText;
       const jTiada = document.getElementById('statTiadaLesen').innerText;
       const jLuput = document.getElementById('statLesenLuput').innerText;
 
@@ -285,6 +439,9 @@
       csvContent += "Metrik,Nilai\n";
       csvContent += `Jumlah Pemandu Berdaftar,${jPemandu}\n`;
       csvContent += `Pemandu Terlibat Ambulans Gantian,${jAmbulans}\n`;
+      csvContent += `Memiliki Lesen GDL Sahaja,${jGDL}\n`;
+      csvContent += `Memiliki Lesen PSV Sahaja,${jPSV}\n`;
+      csvContent += `Memiliki Lesen GDL & PSV,${jGDLPSV}\n`;
       csvContent += `Belum Memiliki Lesen Vokasional,${jTiada}\n`;
       csvContent += `Lesen Tamat Tempoh,${jLuput}\n`;
 
